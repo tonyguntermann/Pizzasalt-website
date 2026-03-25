@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PizzaSalt — Flavor Worth Sprinkling</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:    #D4251C;
+      --cream:  #F5EFE0;
+      --tan:    #E8D9BC;
+      --char:   #1A1208;
+      --gold:   #C8972A;
+      --smoke:  #6B5D4F;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--char);
+      overflow-x: hidden;
+    }
+
+    /* ─── NOISE TEXTURE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.04;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100svh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* big diagonal red slash */
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: -10%;
+      right: -5%;
+      width: 55%;
+      height: 130%;
+      background: var(--red);
+      clip-path: polygon(12% 0%, 100% 0%, 100% 100%, 0% 100%);
+      z-index: 0;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: relative; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5rem 2.5rem;
+    }
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 0.06em;
+      color: var(--char);
+      text-decoration: none;
+    }
+    .logo span { color: var(--red); }
+    .nav-badge {
+      background: var(--char);
+      color: var(--cream);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.45rem 1rem;
+      border-radius: 2px;
+    }
+
+    /* ─── HERO CONTENT ─── */
+    .hero-body {
+      position: relative; z-index: 10;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 2rem;
+      padding: 3rem 2.5rem;
+    }
+
+    .hero-left { max-width: 560px; }
+
+    .eyebrow {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--smoke);
+      margin-bottom: 1.2rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.2s forwards;
+    }
+
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(4.5rem, 9vw, 8rem);
+      line-height: 0.9;
+      letter-spacing: 0.01em;
+      color: var(--char);
+      opacity: 0;
+      animation: fadeUp 0.7s 0.35s forwards;
+    }
+    h1 em {
+      font-style: normal;
+      color: var(--red);
+      display: block;
+    }
+
+    .hero-desc {
+      margin-top: 1.6rem;
+      font-size: 1.05rem;
+      line-height: 1.65;
+      color: var(--smoke);
+      max-width: 42ch;
+      font-weight: 300;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.5s forwards;
+    }
+
+    /* ─── SIGNUP CARD (right side of hero) ─── */
+    .signup-card {
+      background: var(--char);
+      color: var(--cream);
+      padding: 2.8rem 2.4rem;
+      border-radius: 4px;
+      position: relative;
+      z-index: 10;
+      box-shadow: 8px 8px 0 var(--gold);
+      opacity: 0;
+      animation: fadeUp 0.7s 0.65s forwards;
+    }
+    .signup-card h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.7rem;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+    .signup-card h2 em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .signup-card p {
+      font-size: 0.88rem;
+      color: #a89880;
+      margin-bottom: 1.8rem;
+      line-height: 1.55;
+    }
+
+    .field { margin-bottom: 1rem; }
+    .field label {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #a89880;
+      margin-bottom: 0.4rem;
+    }
+    .field input,
+    .field select {
+      width: 100%;
+      background: #2a1f14;
+      border: 1px solid #3d2e1e;
+      border-radius: 2px;
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      padding: 0.75rem 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+    }
+    .field input:focus,
+    .field select:focus { border-color: var(--gold); }
+    .field input::placeholder { color: #5a4838; }
+
+    .checkbox-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-bottom: 1.4rem;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.83rem;
+      color: #b8a88a;
+      cursor: pointer;
+    }
+    .checkbox-label input[type="checkbox"] {
+      width: 15px; height: 15px;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--red);
+      color: #fff;
+      border: none;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.25rem;
+      letter-spacing: 0.1em;
+      padding: 1rem;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-submit:hover { background: #b81e16; transform: translateY(-1px); }
+    .btn-submit:active { transform: translateY(0); }
+
+    .form-note {
+      font-size: 0.72rem;
+      color: #5a4838;
+      text-align: center;
+      margin-top: 0.9rem;
+    }
+
+    /* success state */
+    .success-msg {
+      display: none;
+      text-align: center;
+      padding: 2rem 0;
+    }
+    .success-msg .check {
+      font-size: 3rem;
+      margin-bottom: 0.8rem;
+    }
+    .success-msg h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+    .success-msg p { font-size: 0.9rem; color: #a89880; }
+
+    /* ─── HERO BOTTOM BAR ─── */
+    .hero-bottom {
+      position: relative; z-index: 10;
+      padding: 1.2rem 2.5rem;
+      display: flex;
+      gap: 3rem;
+      border-top: 1px solid rgba(26,18,8,0.12);
+    }
+    .stat { display: flex; align-items: baseline; gap: 0.5rem; }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      color: var(--red);
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--smoke);
+      letter-spacing: 0.06em;
+    }
+
+    /* ─── FLAVORS STRIP ─── */
+    .flavors-strip {
+      background: var(--char);
+      padding: 5rem 2.5rem;
+      overflow: hidden;
+    }
+    .section-tag {
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.8rem;
+    }
+    .flavors-strip h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      color: var(--cream);
+      margin-bottom: 3rem;
+    }
+    .flavor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1px;
+      background: #2a1f14;
+    }
+    .flavor-card {
+      background: #1e140c;
+      padding: 2rem 1.5rem;
+      border-top: 3px solid transparent;
+      transition: border-color 0.2s, background 0.2s;
+      cursor: default;
+    }
+    .flavor-card:hover {
+      border-color: var(--gold);
+      background: #2a1f14;
+    }
+    .flavor-icon { font-size: 2.2rem; margin-bottom: 0.8rem; }
+    .flavor-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      color: var(--cream);
+      letter-spacing: 0.04em;
+      margin-bottom: 0.4rem;
+    }
+    .flavor-desc { font-size: 0.82rem; color: #7a6858; line-height: 1.5; }
+
+    /* ─── HOW IT WORKS ─── */
+    .how {
+      padding: 5rem 2.5rem;
+      background: var(--tan);
+    }
+    .how h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      margin-bottom: 3rem;
+    }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+    }
+    .step { position: relative; }
+    .step-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 5rem;
+      color: rgba(212,37,28,0.12);
+      line-height: 1;
+      margin-bottom: -1.2rem;
+    }
+    .step h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    .step p { font-size: 0.88rem; color: var(--smoke); line-height: 1.6; }
+
+    /* ─── MANIFESTO ─── */
+    .manifesto {
+      background: var(--red);
+      color: #fff;
+      padding: 5rem 2.5rem;
+      text-align: center;
+    }
+    .manifesto blockquote {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.8rem);
+      line-height: 1.3;
+      max-width: 700px;
+      margin: 0 auto 1.5rem;
+    }
+    .manifesto blockquote em { font-style: italic; opacity: 0.75; }
+    .manifesto cite {
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--char);
+      color: #5a4838;
+      padding: 2rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      color: var(--cream);
+      letter-spacing: 0.06em;
+    }
+    .footer-logo span { color: var(--red); }
+
+    /* ─── SCROLL TICKER ─── */
+    .ticker-wrap {
+      background: var(--gold);
+      padding: 0.6rem 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker {
+      display: inline-block;
+      animation: ticker 20s linear infinite;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.12em;
+      color: var(--char);
+    }
+    .ticker span { margin: 0 2.5rem; }
+    .ticker span::after { content: '✦'; margin-left: 2.5rem; }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 820px) {
+      .hero::after { display: none; }
+      .hero-body { grid-template-columns: 1fr; }
+      .hero-bottom { gap: 1.5rem; flex-wrap: wrap; }
+      .checkbox-group { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="hero">
+  <nav>
+    <a href="#" class="logo">Pizza<span>Salt</span></a>
+    <div class="nav-badge">Coming Soon</div>
+  </nav>
+
+  <!-- HERO BODY -->
+  <div class="hero-body">
+    <div class="hero-left">
+      <p class="eyebrow">Artisan Flavored Salt for Pizza Lovers</p>
+      <h1>Finish<br><em>Every</em><br>Slice.</h1>
+      <p class="hero-desc">
+        PizzaSalt is a line of small-batch finishing salts crafted specifically for pizza — 
+        bold flavors that make the last bite as good as the first.
+        We're not launched yet, but we're building something worth waiting for.
+      </p>
+    </div>
+
+    <!-- SIGNUP CARD -->
+    <div class="signup-card" id="signup">
+      <h2>Be First <em>In Line.</em></h2>
+      <p>Drop your email and help us decide what to make. Zero spam, just updates when we launch.</p>
+
+      <div id="signup-form">
+        <div class="field">
+          <label for="name">Your name</label>
+          <input type="text" id="name" placeholder="Tony" />
+        </div>
+        <div class="field">
+          <label for="email">Email address</label>
+          <input type="email" id="email" placeholder="you@example.com" />
+        </div>
+        <div class="field">
+          <label>Which flavors sound most interesting?</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label"><input type="checkbox" value="spicy"> 🌶 Spicy</label>
+            <label class="checkbox-label"><input type="checkbox" value="garlic"> 🧄 Garlic</label>
+            <label class="checkbox-label"><input type="checkbox" value="truffle"> 🍄 Truffle</label>
+            <label class="checkbox-label"><input type="checkbox" value="lemon"> 🍋 Citrus</label>
+            <label class="checkbox-label"><input type="checkbox" value="herb"> 🌿 Herb</label>
+            <label class="checkbox-label"><input type="checkbox" value="smoke"> 🔥 Smoky</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="pizza-type">What kind of pizza do you make?</label>
+          <select id="pizza-type">
+            <option value="">— Pick one —</option>
+            <option>Neapolitan / Wood-fired</option>
+            <option>New York Style</option>
+            <option>Detroit / Grandma</option>
+            <option>Frozen (we don't judge)</option>
+            <option>I order delivery mostly</option>
+          </select>
+        </div>
+        <button class="btn-submit" onclick="handleSignup()">NOTIFY ME AT LAUNCH →</button>
+        <p class="form-note">No spam. Unsubscribe anytime. We hate bad email too.</p>
+      </div>
+
+      <div class="success-msg" id="success-msg">
+        <div class="check">🧂</div>
+        <h3>You're on the list!</h3>
+        <p>We'll reach out the moment PizzaSalt is ready to ship. Thanks for the flavor votes — they actually matter.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO BOTTOM STATS -->
+  <div class="hero-bottom">
+    <div class="stat">
+      <span class="stat-num" id="counter">0</span>
+      <span class="stat-label">early sign-ups</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">6</span>
+      <span class="stat-label">flavors planned</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">∞</span>
+      <span class="stat-label">slices improved</span>
+    </div>
+  </div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker-wrap" aria-hidden="true">
+  <div class="ticker">
+    <span>Finishing Salt for Pizza</span>
+    <span>Small Batch</span>
+    <span>Crafted for Crust</span>
+    <span>Flavor Forward</span>
+    <span>Finishing Salt for Pizza</span>
+    <span>Small Batch</span>
+    <span>Crafted for Crust</span>
+    <span>Flavor Forward</span>
+    <span>Finishing Salt for Pizza</span>
+    <span>Small Batch</span>
+    <span>Crafted for Crust</span>
+    <span>Flavor Forward</span>
+  </div>
+</div>
+
+<!-- FLAVORS -->
+<section class="flavors-strip">
+  <p class="section-tag">The Lineup (Coming Soon)</p>
+  <h2>Six Flavors. One Obsession.</h2>
+  <div class="flavor-grid">
+    <div class="flavor-card">
+      <div class="flavor-icon">🌶</div>
+      <div class="flavor-name">Calabrian Heat</div>
+      <div class="flavor-desc">Southern Italian chili flake blended with sea salt. Slow burn, big finish.</div>
+    </div>
+    <div class="flavor-card">
+      <div class="flavor-icon">🧄</div>
+      <div class="flavor-name">Black Garlic</div>
+      <div class="flavor-desc">Aged black garlic, mellow and rich. For the garlic people.</div>
+    </div>
+    <div class="flavor-card">
+      <div class="flavor-icon">🍄</div>
+      <div class="flavor-name">Porcini & Smoke</div>
+      <div class="flavor-desc">Wild mushroom and applewood smoke. Earthy, complex, unforgettable.</div>
+    </div>
+    <div class="flavor-card">
+      <div class="flavor-icon">🍋</div>
+      <div class="flavor-name">Sicilian Citrus</div>
+      <div class="flavor-desc">Bright lemon zest and sea salt. Pairs especially well with white pies.</div>
+    </div>
+    <div class="flavor-card">
+      <div class="flavor-icon">🌿</div>
+      <div class="flavor-name">Oregano & Basil</div>
+      <div class="flavor-desc">Classic Italian herbs, dried and crushed with flaky salt. Pizza aromatherapy.</div>
+    </div>
+    <div class="flavor-card">
+      <div class="flavor-icon">🔥</div>
+      <div class="flavor-name">Smoked Peperoncino</div>
+      <div class="flavor-desc">Smoked peperoncino and pink salt. Goes on everything. Trust us.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <p class="section-tag">How It Works</p>
+  <h2>Simple. Finish Your Pizza Right.</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Pull it from the oven</h3>
+      <p>Your pizza is perfect. But it's missing one thing: a finishing salt that amplifies every ingredient.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Pinch & sprinkle</h3>
+      <p>A small pinch goes a long way. Start light, taste, then add more — find your perfect finish.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>Every bite, elevated</h3>
+      <p>The salt melts into the cheese, hits the crust, and makes the whole thing pop. That's PizzaSalt.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <h3>Tell your pizza friends</h3>
+      <p>Because good things spread. Share the love — your friends' pizzas deserve this too.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="manifesto">
+  <blockquote>
+    "Pizza is already perfect.<br>
+    <em>We just make the last bite unforgettable.</em>"
+  </blockquote>
+  <cite>— The PizzaSalt Manifesto</cite>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Pizza<span>Salt</span>.com</div>
+  <div>© 2025 PizzaSalt. All rights reserved.</div>
+  <div>Built with curiosity &amp; Claude.</div>
+</footer>
+
+<script>
+  // ── Animated counter ──
+  (function animateCounter() {
+    const el = document.getElementById('counter');
+    const target = 47; // placeholder number — replace with real data later
+    let current = 0;
+    const step = () => {
+      current = Math.min(current + 1, target);
+      el.textContent = current;
+      if (current < target) requestAnimationFrame(step);
+    };
+    setTimeout(() => requestAnimationFrame(step), 900);
+  })();
+
+  // ── Signup handler ──
+  function handleSignup() {
+    const name  = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email || !emailRe.test(email)) {
+      document.getElementById('email').style.borderColor = '#D4251C';
+      document.getElementById('email').focus();
+      return;
+    }
+
+    // ── Collect flavor votes ──
+    const flavors = [...document.querySelectorAll('.checkbox-group input:checked')]
+                      .map(cb => cb.value);
+    const pizzaType = document.getElementById('pizza-type').value;
+
+    // ── Log submission (swap this for your real endpoint later) ──
+    console.log('New signup:', { name, email, flavors, pizzaType });
+
+    // ── TODO: POST to your backend / n8n webhook here ──
+    // fetch('https://your-n8n-webhook.com/pizzasalt', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ name, email, flavors, pizzaType })
+    // });
+
+    // Show success
+    document.getElementById('signup-form').style.display = 'none';
+    document.getElementById('success-msg').style.display  = 'block';
+
+    // Increment counter
+    const el = document.getElementById('counter');
+    el.textContent = parseInt(el.textContent) + 1;
+  }
+
+  // ── Scroll fade-in for sections ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.flavor-card, .step').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
