@@ -203,11 +203,44 @@
       font-size: 0.83rem;
       color: #b8a88a;
       cursor: pointer;
+      background: #2a1f14;
+      border: 1px solid #3d2e1e;
+      border-radius: 2px;
+      padding: 0.5rem 0.7rem;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+    .checkbox-label:hover {
+      border-color: var(--gold);
     }
     .checkbox-label input[type="checkbox"] {
-      width: 15px; height: 15px;
-      accent-color: var(--gold);
-      cursor: pointer;
+      position: absolute;
+      opacity: 0;
+      width: 0; height: 0;
+    }
+    .checkbox-label .flavor-check {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px; height: 16px;
+      border: 1.5px solid #5a4838;
+      border-radius: 3px;
+      flex-shrink: 0;
+      font-size: 0.65rem;
+      color: transparent;
+      transition: all 0.15s;
+    }
+    .checkbox-label input[type="checkbox"]:checked ~ .flavor-check {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--char);
+    }
+    .checkbox-label input[type="checkbox"]:checked ~ .flavor-text {
+      color: var(--gold);
+    }
+    .checkbox-label:has(input[type="checkbox"]:checked) {
+      border-color: var(--gold);
+      background: #3a2a10;
     }
 
     .btn-submit {
@@ -453,7 +486,7 @@
       <div id="signup-form">
         <div class="field">
           <label for="name">Your name</label>
-          <input type="text" id="name" placeholder="Name" />
+          <input type="text" id="name" placeholder="Tony" />
         </div>
         <div class="field">
           <label for="email">Email address</label>
@@ -462,12 +495,12 @@
         <div class="field">
           <label>Which flavors sound most interesting?</label>
           <div class="checkbox-group">
-            <label class="checkbox-label"><input type="checkbox" value="spicy"> 🌶 Spicy</label>
-            <label class="checkbox-label"><input type="checkbox" value="garlic"> 🧄 Garlic</label>
-            <label class="checkbox-label"><input type="checkbox" value="truffle"> 🍄 Truffle</label>
-            <label class="checkbox-label"><input type="checkbox" value="lemon"> 🍋 Citrus</label>
-            <label class="checkbox-label"><input type="checkbox" value="herb"> 🌿 Herb</label>
-            <label class="checkbox-label"><input type="checkbox" value="smoke"> 🔥 Smoky</label>
+            <label class="checkbox-label"><input type="checkbox" value="spicy"><span class="flavor-check">✓</span><span class="flavor-text">🌶 Spicy</span></label>
+            <label class="checkbox-label"><input type="checkbox" value="garlic"><span class="flavor-check">✓</span><span class="flavor-text">🧄 Garlic</span></label>
+            <label class="checkbox-label"><input type="checkbox" value="truffle"><span class="flavor-check">✓</span><span class="flavor-text">🍄 Truffle</span></label>
+            <label class="checkbox-label"><input type="checkbox" value="lemon"><span class="flavor-check">✓</span><span class="flavor-text">🍋 Citrus</span></label>
+            <label class="checkbox-label"><input type="checkbox" value="herb"><span class="flavor-check">✓</span><span class="flavor-text">🌿 Herb</span></label>
+            <label class="checkbox-label"><input type="checkbox" value="smoke"><span class="flavor-check">✓</span><span class="flavor-text">🔥 Smoky</span></label>
           </div>
         </div>
         <div class="field">
@@ -611,6 +644,14 @@
 </footer>
 
 <script>
+  // ── Highlight selected flavor label ──
+  document.querySelectorAll('.checkbox-group input[type="radio"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      document.querySelectorAll('.checkbox-label').forEach(l => l.classList.remove('selected'));
+      radio.closest('.checkbox-label').classList.add('selected');
+    });
+  });
+
   // ── Animated counter ──
   (function animateCounter() {
     const el = document.getElementById('counter');
@@ -636,20 +677,20 @@
       return;
     }
 
-    // ── Collect flavor votes ──
-    const flavors = [...document.querySelectorAll('.checkbox-group input:checked')]
-                      .map(cb => cb.value);
+    // ── Collect flavor vote ──
+    const flavorInput = document.querySelector('.checkbox-group input[type="radio"]:checked');
+    const flavors = flavorInput ? flavorInput.value : '';
     const pizzaType = document.getElementById('pizza-type').value;
 
     // ── Log submission (swap this for your real endpoint later) ──
     console.log('New signup:', { name, email, flavors, pizzaType });
 
     // ── TODO: POST to your backend / n8n webhook here ──
-    fetch('https://pizzasalt.app.n8n.cloud/webhook/pizzasalt-signup', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, email, flavors, pizzaType })    
-});
+    // fetch('https://your-n8n-webhook.com/pizzasalt', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ name, email, flavors, pizzaType })
+    // });
 
     // Show success
     document.getElementById('signup-form').style.display = 'none';
