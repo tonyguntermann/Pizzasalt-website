@@ -686,11 +686,11 @@
     console.log('New signup:', { name, email, flavors, pizzaType });
 
     // ── TODO: POST to your backend / n8n webhook here ──
-    // fetch('https://your-n8n-webhook.com/pizzasalt', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ name, email, flavors, pizzaType })
-    // });
+    fetch('https://pizzasalt.app.n8n.cloud/webhook/pizzasalt-signup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, flavors, pizzaType })
+    });
 
     // Show success
     document.getElementById('signup-form').style.display = 'none';
