@@ -685,6 +685,8 @@
 
     // ── Log submission (swap this for your real endpoint later) ──
     console.log('New signup:', { name, email, flavors, pizzaType });
+    console.log('Flavors collected:', flavors);
+    console.log('Raw checkboxes:', [...document.querySelectorAll('.checkbox-group input[type="checkbox"]')].map(cb => ({ value: cb.value, checked: cb.checked })));
 
     // ── TODO: POST to your backend / n8n webhook here ──
     fetch('https://pizzasalt.app.n8n.cloud/webhook/pizzasalt-signup', {
