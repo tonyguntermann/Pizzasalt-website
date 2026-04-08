@@ -678,8 +678,9 @@
     }
 
     // ── Collect flavor vote ──
-    const flavorInput = document.querySelector('.checkbox-group input[type="radio"]:checked');
-    const flavors = flavorInput ? flavorInput.value : '';
+    const flavors = [...document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked')]
+                  .map(cb => cb.value)
+                  .join(', ');
     const pizzaType = document.getElementById('pizza-type').value;
 
     // ── Log submission (swap this for your real endpoint later) ──
