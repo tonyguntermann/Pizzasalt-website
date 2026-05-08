@@ -74,6 +74,19 @@
       text-decoration: none;
     }
     .logo span { color: var(--red); }
+    .nav-right {
+      display: flex; align-items: center; gap: 1.8rem;
+    }
+    .nav-link {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--smoke);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-link:hover { color: var(--char); }
     .nav-badge {
       background: var(--char);
       color: var(--cream);
@@ -463,7 +476,10 @@
 <header class="hero">
   <nav>
     <a href="#" class="logo">Pizza<span>Salt</span></a>
-    <div class="nav-badge">Coming Soon</div>
+    <div class="nav-right">
+      <a href="blog.html" class="nav-link">Blog</a>
+      <div class="nav-badge">Coming Soon</div>
+    </div>
   </nav>
 
   <!-- HERO BODY -->
