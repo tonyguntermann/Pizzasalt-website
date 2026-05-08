@@ -430,8 +430,15 @@
       font-size: 1.3rem;
       color: var(--cream);
       letter-spacing: 0.06em;
+      text-decoration: none;
     }
     .footer-logo span { color: var(--red); }
+    .footer-link {
+      color: #5a4838;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-link:hover { color: var(--cream); }
 
     /* ─── SCROLL TICKER ─── */
     .ticker-wrap {
@@ -654,7 +661,8 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">Pizza<span>Salt</span>.com</div>
+  <a href="https://pizzasalt.com" class="footer-logo">Pizza<span>Salt</span>.com</a>
+  <a href="blog.html" class="footer-link">Blog</a>
   <div>© 2025 PizzaSalt. All rights reserved.</div>
   <div>Built with curiosity &amp; Claude.</div>
 </footer>
